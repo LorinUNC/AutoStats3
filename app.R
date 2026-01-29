@@ -1,21 +1,35 @@
 library(shiny)
-library(ggplot2)
-library(DT)
-library(munsell)
+library(bslib)
 
+#UI Tabs ----
+ui_libcal <- div(class = "main",
+                 p("LibCal")
+                 )
+
+ui_emails <- p("E-mails")
+
+ui_instreq <- p("Instruction Requests")
+
+#UI Page ----
 ui <- fluidPage(
-  plotOutput("plot", brush = "plot_brush"),
-  DTOutput("table")
+  tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
+  ),
+  titlePanel(title = "AutoStats 3.0", windowTitle = "AutoStats 3.0"),
+  hr(),
+  navset_pill_list( 
+    nav_item("What type of stats do you want to generate?"),
+    nav_panel("LibCal Appointments", ui_libcal), 
+    nav_panel("E-mails", ui_emails), 
+    nav_panel("Instruction Requests", ui_instreq), 
+  ), 
+  id = "tab" 
 )
 
+
+
 server <- function(input, output) {
-  output$plot <- renderPlot(
-    ggplot(mtcars) +
-      geom_point(aes(x = mpg, y = disp))
-  )
-  output$table <- renderDT({
-    brushedPoints(mtcars, input$plot_brush)
-  })
+
 }
 
 shinyApp(ui = ui, server = server)
